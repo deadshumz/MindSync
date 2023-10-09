@@ -1,0 +1,36 @@
+p {
+    margin:0;
+}
+
+.inputLabel {
+    margin:0;
+    margin-bottom: 5px;
+}
+.customInput {
+    font-size: 14px;
+    max-width: 500px;
+    background-color: #292929;
+    border: none; 
+    color: #fff;
+    padding: 4px 8px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.1s;
+}
+
+.customInput:hover {
+    background-color: #323232;
+}
+.InputChange {
+    color:white;
+    cursor: pointer;
+    user-select: none;
+}
+.changePathText {
+    margin-left:5px;
+    font-style: italic;
+    font-size: 12px;
+    opacity: 0.6;
+}

@@ -1,0 +1,15 @@
+.sidebarBtn {
+    background: transparent;
+    border:none;
+    padding: 0;
+    color: rgb(115	115	115	);
+    transition: color .1s ease-in-out;
+    cursor: pointer;
+}
+.sidebarBtn > svg {
+    width: 24px;
+    height: 24px;
+}
+.sidebarBtn:hover {
+    color:rgb(200, 200, 200);
+}

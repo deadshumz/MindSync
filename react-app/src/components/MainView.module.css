@@ -1,0 +1,10 @@
+.frame {
+    padding: 15px;
+    flex:1;
+    position: relative;
+    box-sizing: border-box;
+}
+
+p {
+    margin-top:0;
+}

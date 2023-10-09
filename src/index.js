@@ -1,72 +1,44 @@
-const { app, BrowserWindow, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const settings = require('electron-settings')
+const isDev = require('electron-is-dev')
+require('./ipcHandlers')
+const {setupStorageOnFirstRun} = require('./utils')
+
+
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
-const createWindow = () => {
+const createWindow = async () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration: true,
+      contextIsolation: false,
     },
   });
 
-  // and load the index.html of the app.
-  mainWindow.loadFile(path.join(__dirname, 'index.html'));
 
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools();
-};
-
-
-async function storagePath() {
-  curPath = await settings.get('storageDir')
-
-  while(!curPath) {
-    const message = {
-      message: "Для работы необхадимо указать путь сохранения файлов",
-      type: "info",
-      buttons: ["Выбрать путь сохранения", "Отмена"],
-      defaultId: 0,
-    }
-
-    const messageRes = await dialog.showMessageBox(message);
-    if (messageRes.response === 0) {
-      const dialogSettings = {
-        title: "Выберите папку для сохранения файлов",
-        properties: ['openDirectory']
-      }
-
-      const dialogResult = await dialog.showOpenDialog(dialogSettings);
-
-      if (!dialogResult.canceled && dialogResult.filePaths.length > 0) {
-        const newPath = dialogResult.filePaths[0];
-        await settings.set('storageDir', newPath)
-      }
-    } else {
-      return false
-    }
+  if(isDev) {
+    mainWindow.loadURL('http://localhost:3000');
+    mainWindow.webContents.openDevTools();
+  } else {
+    mainWindow.loadFile(path.join(__dirname, 'index.html'));
   }
-
-  return true
 }
 
 
 
 app.on('ready', async () => {
   // проверка задан ли путь для файлов
-  const isStorageDir = await storagePath()
-  if (isStorageDir === true) {
-    createWindow()
-  } else {
-    app.quit()
-  }
+  const storageExists = await setupStorageOnFirstRun()
+  createWindow()
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
